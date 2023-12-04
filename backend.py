@@ -8,12 +8,11 @@ from langchain.document_loaders import PyPDFLoader
 import os
 import openai
 import pinecone
-from dotenv import load_dotenv
-load_dotenv()
+import streamlit as st
 
 # Get your API keys from openai, you will need to create an account.
 # Here is the link to get the keys: https://platform.openai.com/account/billing/overview
-os.environ["OPENAI_API_KEY"] = os.getenv("openai_apikey")
+os.environ["OPENAI_API_KEY"] = st.secrets["openai_apikey"]
 
 #root_dir = "/Users/juanandresmarin/Documents/Coding/STREAMLIT_BOT/DOCS/knowledge_base.pdf"
 root_dir = "https://marinjuanandres1.github.io/tictuk-ai-bot/knowledge_base.pdf"
@@ -30,7 +29,7 @@ docs = load_docs(root_dir)
 # Download embeddings from OpenAI
 embeddings = OpenAIEmbeddings()
 
-pinecone.init(api_key= os.getenv("pinecone_apikey"), environment="gcp-starter")
+pinecone.init(api_key= st.secrets["pinecone_apikey"], environment="gcp-starter")
 
 index_name = "aibot"
 
@@ -50,3 +49,4 @@ def get_answer(query):
   similar_docs = get_similiar_docs(query)
   answer = chain.run(input_documents=similar_docs, question=query)
   return answer
+
